@@ -1,65 +1,95 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col min-h-screen bg-surface">
+      {/* Hero Section - Mobile First */}
+      <section className="relative px-6 py-16 md:py-32 flex flex-col items-center text-center signature-texture overflow-hidden">
+        <div className="z-10 flex flex-col items-center gap-8 max-w-4xl">
+          <header className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <span className="tracking-archival text-xs md:text-sm text-primary font-medium">Ateliê</span>
+            <h1 className="text-4xl md:text-8xl font-serif text-on-surface leading-[1.1] md:leading-tight">
+              Sogni di Carta
+            </h1>
+            <p className="max-w-md md:text-lg text-primary/70 font-sans italic mt-4">
+              Onde o papel ganha vida para contar a sua história. Papelaria fina e curadoria de detalhes para eventos inesquecíveis.
+            </p>
+          </header>
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+            <Button variant="primary" size="lg" className="w-full sm:w-auto">
+              Ver Catálogo
+            </Button>
+            <Button variant="glass" size="lg" className="w-full sm:w-auto">
+              Nossa História
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Decorative Element - Ethereal Blur */}
+        <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[150%] h-64 bg-primary-container/30 blur-[120px] rounded-full" />
+      </section>
+
+      {/* Featured Categories - Grid Layout Responsive */}
+      <section className="px-6 py-20 mx-auto max-w-7xl w-full">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+          <div className="flex flex-col gap-2">
+            <span className="tracking-archival text-xs text-primary/60 font-medium">Coleções</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-on-surface">Essenciais do Escritor</h2>
+          </div>
+          <Link href="/catalogo" className="text-sm font-medium text-primary hover:underline tracking-archival">
+            Explorar Tudo
+          </Link>
         </div>
-      </main>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { title: "Papéis de Carta", desc: "Texturas que convidam ao toque.", img: "/window.svg" },
+            { title: "Canetas Tinteiro", desc: "A fluidez do pensamento em tinta.", img: "/file.svg" },
+            { title: "Cadernos de Couro", desc: "Onde seus segredos repousam.", img: "/globe.svg" },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="group cursor-pointer flex flex-col gap-6 p-8 bg-surface-container-low rounded-xl transition-all hover:bg-surface-container-lowest hover:whisper-shadow"
+            >
+              <div className="aspect-[4/5] bg-surface-container-highest rounded-lg flex items-center justify-center p-12 transition-transform group-hover:scale-[1.02]">
+                <Image src={item.img} alt={item.title} width={80} height={80} className="opacity-20 grayscale" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-serif text-2xl text-on-surface">{item.title}</h3>
+                <p className="text-primary/60 text-sm italic">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Editorial Section - Tactile Experience */}
+      <section className="bg-surface-container-high py-24 px-6 overflow-hidden">
+        <div className="mx-auto max-w-7xl flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex-1 space-y-8 max-w-xl">
+            <span className="tracking-archival text-xs text-primary font-medium">Filosofia Slow Design</span>
+            <h2 className="text-4xl md:text-5xl font-serif text-on-surface leading-tight">
+              Mais que uma papelaria, <br /> um santuário para a mente.
+            </h2>
+            <p className="text-lg text-primary/80 leading-relaxed font-sans italic">
+              "Em um mundo digital efêmero, o papel é o âncora do que é eterno. Cada item em nosso arquivo é escolhido por sua capacidade de envelhecer com dignidade e contar uma história."
+            </p>
+            <div className="pt-4">
+              <Button variant="secondary" className="ghost-border">Ler Manifesto</Button>
+            </div>
+          </div>
+          <div className="flex-1 w-full lg:w-auto relative">
+            <div className="aspect-square md:aspect-video bg-surface-container-lowest rounded-xl whisper-shadow flex items-center justify-center p-20 transform lg:rotate-2">
+              <span className="font-serif text-primary/10 text-9xl select-none">Vellum</span>
+            </div>
+            {/* Absolute offset element to break the grid */}
+            <div className="hidden md:block absolute -bottom-8 -left-8 size-48 bg-primary-container rounded-xl rotate-12 -z-10 opacity-30" />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

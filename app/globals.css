@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts */
+  --font-serif: var(--font-noto-serif);
+  --font-sans: var(--font-plus-jakarta-sans);
+
+  /* Colors */
+  --color-surface: #faf9f6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f4f0;
+  --color-surface-container: #f0eee8;
+  --color-surface-container-high: #ebe9e1;
+  --color-surface-container-highest: #e6e3d9;
+
+  --color-primary: #755850;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #eec7be;
+
+  --color-secondary: #d1d9cf; /* Sage */
+  --color-on-surface: #1a1c1a;
+
+  /* Border Radius */
+  --radius-xl: 1.5rem;
+
+  /* Shadows */
+  --shadow-whisper: 0 12px 40px -10px rgba(117, 88, 80, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-surface);
+    --foreground: var(--color-on-surface);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Stylized Scrollbar - Global Scope */
+html {
+  scrollbar-gutter: stable;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #faf9f6; /* Equivalent to color-surface */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d9cf; /* Sage / Secondary color */
+  border-radius: 100px;
+  border: 2px solid #faf9f6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #755850; /* Primary color */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d9cf transparent;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .glass {
+    background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .signature-texture {
+    background: radial-gradient(circle, var(--color-primary-container) 0%, var(--color-surface) 100%);
+  }
+
+  .vellum-overlay {
+    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+
+  .ghost-border {
+    outline: 1px solid color-mix(in srgb, var(--color-on-surface) 20%, transparent);
+  }
+
+  .whisper-shadow {
+    box-shadow: var(--shadow-whisper);
+  }
+
+  .tracking-archival {
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+  }
 }

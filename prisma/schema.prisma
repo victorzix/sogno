@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  cpf       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento 1:1 com endereço (pode ser expandido para 1:N no futuro)
+  address   Address?
+
+  @@map("users")
+}
+
+model Address {
+  id           String  @id @default(cuid())
+  zipCode      String  // CEP
+  street       String  // Logradouro
+  number       String  // Número
+  complement   String? // Complemento
+  neighborhood String  // Bairro
+  city         String  // Cidade
+  state        String  // Estado (UF)
+  
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String  @unique // Mantém 1:1 por enquanto
+
+  @@map("addresses")
+}
