@@ -62,7 +62,7 @@ export function ProfileForm({ userId, defaultValues }: ProfileFormProps) {
           />
         </div>
         <FormItem className="space-y-1.5">
-          <FormLabel className="tracking-archival text-[10px] uppercase text-primary/60 font-medium ml-1">CPF (Imutável)</FormLabel>
+          <FormLabel className="tracking-archival text-[10px] uppercase text-primary/60 font-medium ml-1">CPF</FormLabel>
           <Input disabled value={defaultValues.cpf} className="h-10 text-sm bg-surface-container-low/30 border-none cursor-not-allowed opacity-60" />
         </FormItem>
         <Button type="submit" className="w-full h-11 rounded-full bg-primary text-white hover:opacity-95 transition-all shadow-none mt-4 text-sm font-medium" disabled={form.formState.isSubmitting}>

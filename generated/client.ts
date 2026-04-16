@@ -51,3 +51,18 @@ export type User = Prisma.UserModel
  * 
  */
 export type Address = Prisma.AddressModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductVariant
+ * 
+ */
+export type ProductVariant = Prisma.ProductVariantModel
+/**
+ * Model VolumeDiscount
+ * 
+ */
+export type VolumeDiscount = Prisma.VolumeDiscountModel

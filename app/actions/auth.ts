@@ -18,13 +18,16 @@ const LoginSchema = z.object({
   password: z.string().min(1, "Digite sua senha"),
 });
 
-export async function registerUser(data: any) {
+type RegisterInput = z.infer<typeof RegisterSchema>;
+type LoginInput = z.infer<typeof LoginSchema>;
+
+export async function registerUser(data: RegisterInput) {
   const validation = RegisterSchema.safeParse(data);
   if (!validation.success) {
     const issue = validation.error.issues[0];
     return { 
       error: issue.message, 
-      field: issue.path[0] 
+      field: issue.path[0] as string
     };
   }
 
@@ -70,7 +73,7 @@ export async function registerUser(data: any) {
   }
 }
 
-export async function loginUser(data: any) {
+export async function loginUser(data: LoginInput) {
   const validation = LoginSchema.safeParse(data);
   if (!validation.success) {
     return { error: validation.error.issues[0].message };

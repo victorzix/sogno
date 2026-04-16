@@ -52,7 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Address: 'Address'
+  Address: 'Address',
+  Product: 'Product',
+  ProductVariant: 'ProductVariant',
+  VolumeDiscount: 'VolumeDiscount'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -97,6 +100,38 @@ export const AddressScalarFieldEnum = {
 } as const
 
 export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
+
+
+export const ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  basePrice: 'basePrice',
+  minQuantity: 'minQuantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductVariantScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  name: 'name',
+  price: 'price'
+} as const
+
+export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
+
+
+export const VolumeDiscountScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  quantityThreshold: 'quantityThreshold',
+  discountPercent: 'discountPercent'
+} as const
+
+export type VolumeDiscountScalarFieldEnum = (typeof VolumeDiscountScalarFieldEnum)[keyof typeof VolumeDiscountScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -16,7 +16,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relacionamento 1:1 com endereço (pode ser expandido para 1:N no futuro)
   address   Address?
 
   @@map("users")
@@ -24,16 +23,49 @@ model User {
 
 model Address {
   id           String  @id @default(cuid())
-  zipCode      String  // CEP
-  street       String  // Logradouro
-  number       String  // Número
-  complement   String? // Complemento
-  neighborhood String  // Bairro
-  city         String  // Cidade
-  state        String  // Estado (UF)
+  zipCode      String
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
   
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String  @unique // Mantém 1:1 por enquanto
+  userId       String  @unique
 
   @@map("addresses")
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  basePrice   Decimal
+  minQuantity Int              @default(1)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  variants    ProductVariant[]
+  discounts   VolumeDiscount[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  productId String
+  name      String
+  price     Decimal? // Se nulo, usa o basePrice do Product
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_variants")
+}
+
+model VolumeDiscount {
+  id                String  @id @default(cuid())
+  productId         String
+  quantityThreshold Int
+  discountPercent   Decimal
+  product           Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("volume_discounts")
 }
