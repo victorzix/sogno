@@ -23,7 +23,7 @@ const navigation = [
   { name: "Contato", href: "/contato" },
 ];
 
-export function Header() {
+export function Header({ cartItemCount = 0 }: { cartItemCount?: number }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -56,8 +56,13 @@ export function Header() {
 
         {/* Right: Actions & Mobile Menu Toggle */}
         <div className="flex flex-1 items-center justify-end gap-6 text-primary">
-          <Link href="/carrinho" className="p-2 transition-transform hover:scale-110">
+          <Link href="/carrinho" className="relative p-2 transition-transform hover:scale-110">
             <ShoppingBag className="size-6" strokeWidth={1.5} />
+            {cartItemCount > 0 && (
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">
+                {cartItemCount}
+              </span>
+            )}
             <span className="sr-only">Carrinho</span>
           </Link>
 

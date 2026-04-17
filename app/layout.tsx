@@ -3,6 +3,7 @@ import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { Header } from "@/components/ui/Header";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { getCart } from "@/app/actions/cart";
 
 const notoSerif = Noto_Serif({
   variable: "--font-noto-serif",
@@ -19,18 +20,21 @@ export const metadata: Metadata = {
   description: "A digital curator experience.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cart = await getCart();
+  const cartItemCount = cart?.items.reduce((acc, item) => acc + item.quantity, 0) || 0;
+
   return (
     <html
       lang="en"
       className={`${notoSerif.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <Header />
+        <Header cartItemCount={cartItemCount} />
         <main className="flex-1">
           {children}
         </main>
@@ -39,3 +43,4 @@ export default function RootLayout({
     </html>
   );
 }
+

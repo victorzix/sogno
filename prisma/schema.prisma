@@ -37,11 +37,21 @@ model Address {
   @@map("addresses")
 }
 
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  products  Product[]
+
+  @@map("categories")
+}
+
 model Product {
   id          String           @id @default(cuid())
   name        String
   basePrice   Decimal
   minQuantity Int              @default(1)
+  categoryId  String?
+  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   variants    ProductVariant[]
