@@ -7,7 +7,6 @@ import { loginSchema } from "@/lib/schemas/auth";
 import { loginUser } from "@/app/actions/auth";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { useHookFormMask } from "use-mask-input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
@@ -19,7 +18,6 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
-  const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -36,7 +34,6 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
       login(result.user);
       toast.success("Login realizado com sucesso!");
       onSuccess();
-      router.push("/");
     } else {
       form.setError("identifier", { type: "manual", message: result.error || "Credenciais inválidas" });
     }

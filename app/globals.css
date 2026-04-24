@@ -16,9 +16,17 @@
   --color-primary: #755850;
   --color-on-primary: #ffffff;
   --color-primary-container: #eec7be;
+  --color-on-primary-container: #6e524b;
 
-  --color-secondary: #d1d9cf; /* Sage */
+  /* M3: secondary = sage escuro; sage = pálido (ex-blurbs / fundos) */
+  --color-secondary: #58624a;
+  --color-secondary-container: #dbe7c8;
+  --color-sage: #d1d9cf;
+
   --color-on-surface: #1a1c1a;
+  --color-on-surface-variant: #4f4442;
+  --color-outline: #817471;
+  --color-outline-variant: #d3c3bf;
 
   /* Border Radius */
   --radius-xl: 1.5rem;
@@ -36,7 +44,7 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    @apply font-sans antialiased;
+    @apply font-sans antialiased selection:bg-primary-container selection:text-on-primary-container;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -110,5 +118,13 @@ html {
   .tracking-archival {
     letter-spacing: 0.05rem;
     text-transform: uppercase;
+  }
+
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined", sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 1;
+    font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
   }
 }

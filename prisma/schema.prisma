@@ -48,8 +48,17 @@ model Category {
 model Product {
   id          String           @id @default(cuid())
   name        String
+  /// Texto curatorial / ficha, comum a todas as variações
+  description String?
+  /// URL amigável (única), ex. "caderno-vellum-classico" — o id cuid fica interno
+  slug        String           @unique
+  imageUrl    String?
+  /// Galeria / várias fotos da ficha (URLs). Se vazio, usa só `imageUrl`.
+  imageUrls   String[]         @default([])
   basePrice   Decimal
   minQuantity Int              @default(1)
+  /// Layout da ficha: `default`, `editorial`, … (ve `lib/product-themes.ts`)
+  theme       String           @default("default")
   categoryId  String?
   category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   createdAt   DateTime         @default(now())
@@ -61,11 +70,15 @@ model Product {
 }
 
 model ProductVariant {
-  id        String   @id @default(cuid())
-  productId String
-  name      String
-  price     Decimal? // Se nulo, usa o basePrice do Product
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  productId   String
+  name        String
+  /// Detalhe desta opção, mostrado junto da descrição base na ficha
+  description String?
+  /// Fotos desta variação (URLs). Pode ficar vazio.
+  imageUrls   String[] @default([])
+  price       Decimal? // Se nulo, usa o basePrice do Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_variants")
 }

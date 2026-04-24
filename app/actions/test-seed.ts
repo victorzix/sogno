@@ -4,11 +4,14 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function createTestProduct() {
+  const slug = `caderno-test-${Date.now()}`;
   const product = await prisma.product.create({
     data: {
       name: 'Caderno Artesanal Clássico',
-      basePrice: 120.00,
+      slug,
+      basePrice: 120.0,
       minQuantity: 1,
+      imageUrls: [],
     },
   });
 

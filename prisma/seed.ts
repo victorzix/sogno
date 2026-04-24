@@ -2,6 +2,7 @@ import { PrismaClient } from '../generated/client';
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import "dotenv/config";
+import { slugify, withUniquePrefix } from "../lib/slug";
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -23,15 +24,58 @@ async function main() {
 
   console.log(`Categoria criada: ${casamentoCategory.name}`);
 
+  // Imagens (Unsplash) — repete em ciclo. Após `migrate`, se o seed acusar campo desconhecido: `npx prisma generate`
+  const unsplash = (id: string) =>
+    `https://images.unsplash.com/${id}?w=800&h=1000&auto=format&fit=crop`;
+  const UNSPLASH_IMAGES = [
+    unsplash("photo-1544716278-ca5e3f4abd8c"),
+    unsplash("photo-1506784365847-bbad939e9335"),
+    unsplash("photo-1456513080510-7bf3a84b82f8"),
+    unsplash("photo-1512820790803-83ca734da794"),
+    unsplash("photo-1513542789411-b6a5d4f31634"),
+    unsplash("photo-1586075010923-2dd4570fb338"),
+    unsplash("photo-1513364776144-60967b0f800f"),
+    unsplash("photo-1606112219348-204d7d8b94ee"),
+    unsplash("photo-1553062407-98bab64c11cc"),
+    unsplash("photo-1606107557195-0f29c4a3b3b0"),
+    unsplash("photo-1507842217121-9d9a60d1e0d4"),
+    unsplash("photo-1455390582262-044c0d003eab"),
+    unsplash("photo-1452860606245-08befc0f44cc"),
+  ];
+
   // Lista de produtos para o Sogni di Carta (Curadoria e Papelaria Artesanal)
-  const products = [
+  const products: {
+    name: string;
+    basePrice: number;
+    description?: string;
+    /** Ficha de produto: `default` (grid) ou `editorial` (exemplo alternativo) */
+    theme?: string;
+    variants: { name: string; price: number; description?: string; imageUrls?: string[] }[];
+  }[] = [
     {
       name: 'Caderno Vellum Clássico',
       basePrice: 120.0,
+      description:
+        'Papel algodão com textura a roçar, pensado para escrever e guardar. Cada caderno é composto e revisto à mão, num ritmo lento, à altura de quem ainda gosta de abrir a capa e sentir o peso da página.',
+      theme: 'editorial',
       variants: [
-        { name: 'Páginas Lisas', price: 120.0 },
-        { name: 'Páginas Pautadas', price: 125.0 },
-        { name: 'Páginas Pontilhadas', price: 125.0 },
+        {
+          name: 'Páginas Lisas',
+          price: 120.0,
+          description:
+            'Superfície contínua, ideal para desenho livre, notas e colagens. Sem ruído de linha — só o teu traço e o silêncio do papel.',
+        },
+        {
+          name: 'Páginas Pautadas',
+          price: 125.0,
+          description: 'Pauta sutil, espacejada para caligrafia e letra corrida, sem apertar o gesto. Adequada a quem gosta de escrever com meio sítio.',
+        },
+        {
+          name: 'Páginas Pontilhadas',
+          price: 125.0,
+          description:
+            'Grelha de pontos discreta, polivalente: bullet journal, tabelas leves, traços técnicos. A estrutura está lá, quase invisível.',
+        },
       ],
     },
     {
@@ -111,16 +155,38 @@ async function main() {
     },
   ];
 
-  for (const p of products) {
+  const usedSlugs = new Set<string>();
+  const nImg = UNSPLASH_IMAGES.length;
+  for (let i = 0; i < products.length; i++) {
+    const p = products[i];
+    const imageUrls = [
+      UNSPLASH_IMAGES[i % nImg],
+      UNSPLASH_IMAGES[(i + 1) % nImg],
+      UNSPLASH_IMAGES[(i + 2) % nImg],
+    ];
+    const imageUrl = imageUrls[0];
+    const baseSlug = slugify(p.name);
+    const slug = withUniquePrefix(baseSlug, usedSlugs);
     const createdProduct = await prisma.product.create({
       data: {
         name: p.name,
+        slug,
+        imageUrl,
+        imageUrls,
         basePrice: p.basePrice,
         categoryId: casamentoCategory.id,
+        ...(p.description != null ? { description: p.description } : {}),
+        ...(p.theme != null ? { theme: p.theme } : {}),
         variants: {
-          create: p.variants.map((v) => ({
+          create: p.variants.map((v, j) => ({
             name: v.name,
             price: v.price,
+            ...(v.description != null ? { description: v.description } : {}),
+            imageUrls:
+              v.imageUrls ?? [
+                UNSPLASH_IMAGES[(i + j + 3) % nImg],
+                UNSPLASH_IMAGES[(i + j + 4) % nImg],
+              ],
           })),
         },
       },

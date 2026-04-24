@@ -30,10 +30,16 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       className={`${notoSerif.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
+      <body className="min-h-full flex flex-col font-sans text-on-surface">
         <Header cartItemCount={cartItemCount} />
         <main className="flex-1">
           {children}

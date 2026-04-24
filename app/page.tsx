@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { prisma } from "@/lib/prisma";
+import { formatBRL, getStartingPrice } from "@/lib/product-display";
+import { productHeroImage } from "@/lib/product-images";
 
 export default async function Home() {
   const categories = await prisma.category.findMany();
@@ -19,7 +21,7 @@ export default async function Home() {
     // Busca os produtos dessa categoria
     const categoryProducts = await prisma.product.findMany({
       where: { categoryId: selectedCategory.id },
-      include: { variants: true }
+      include: { variants: { select: { price: true } } },
     });
 
     // Seleciona 3 produtos de forma "aleatória mas consistente para o dia"
@@ -78,24 +80,37 @@ export default async function Home() {
 
         {displayProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {displayProducts.map((product) => (
-              <Link
-                href="/catalogo"
-                key={product.id}
-                className="group cursor-pointer flex flex-col gap-6 p-8 bg-surface-container-low rounded-xl transition-all hover:bg-surface-container-lowest hover:whisper-shadow"
-              >
-                <div className="aspect-[4/5] bg-surface-container-highest rounded-lg flex items-center justify-center p-12 transition-transform group-hover:scale-[1.02]">
-                  {/* Substituir por imagens reais depois, usando placeholder por enquanto */}
-                  <Image src="/file.svg" alt={product.name} width={80} height={80} className="opacity-20 grayscale" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-serif text-2xl text-on-surface">{product.name}</h3>
-                  <p className="text-primary/60 text-sm italic">
-                    A partir de {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(product.basePrice))}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            {displayProducts.map((product) => {
+              const from = getStartingPrice(product);
+              const hero = productHeroImage(product);
+              const src = hero || "/file.svg";
+              const external = Boolean(hero);
+              const isRemote = src.startsWith("http");
+              return (
+                <Link
+                  href={`/produto/${product.slug}`}
+                  key={product.id}
+                  className="group cursor-pointer flex flex-col gap-6 p-8 bg-surface-container-low rounded-xl transition-all hover:bg-surface-container-lowest hover:whisper-shadow"
+                >
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-container-highest rounded-lg transition-transform group-hover:scale-[1.02]">
+                    <Image
+                      src={src}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className={external ? "object-cover" : "object-contain p-12 opacity-20 grayscale"}
+                      unoptimized={isRemote || src.endsWith(".svg")}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-serif text-2xl text-on-surface">{product.name}</h3>
+                    <p className="text-primary/60 text-sm italic">
+                      A partir de {formatBRL(from)}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -1,7 +1,8 @@
 'use client';
 
 import { useTransition } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import { addToCart } from '@/app/actions/cart';
 import { toast } from 'sonner';
 
@@ -9,9 +10,15 @@ interface AddToCartButtonProps {
   productId: string;
   variantId?: string;
   label?: string;
+  className?: string;
 }
 
-export function AddToCartButton({ productId, variantId, label = "Adicionar ao Carrinho" }: AddToCartButtonProps) {
+export function AddToCartButton({
+  productId,
+  variantId,
+  label = "Adicionar ao Carrinho",
+  className,
+}: AddToCartButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleAdd = () => {
@@ -26,11 +33,11 @@ export function AddToCartButton({ productId, variantId, label = "Adicionar ao Ca
   };
 
   return (
-    <Button 
-      variant="primary" 
-      onClick={handleAdd} 
+    <Button
+      variant="primary"
+      onClick={handleAdd}
       disabled={isPending}
-      className={isPending ? 'opacity-70' : ''}
+      className={cn(isPending && "opacity-70", className)}
     >
       {isPending ? 'Adicionando...' : label}
     </Button>

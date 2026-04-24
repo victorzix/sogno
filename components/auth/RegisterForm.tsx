@@ -7,7 +7,6 @@ import { registerSchema } from "@/lib/schemas/auth";
 import { registerUser } from "@/app/actions/auth";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { useHookFormMask } from "use-mask-input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
@@ -19,7 +18,6 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) {
-  const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -36,7 +34,6 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
       login(result.user);
       toast.success("Conta criada com sucesso!");
       onSuccess();
-      router.push("/");
     } else {
       if (result.field) {
         form.setError(result.field as any, { type: "manual", message: result.error });

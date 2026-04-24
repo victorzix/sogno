@@ -25,8 +25,14 @@ const navigation = [
 
 export function Header({ cartItemCount = 0 }: { cartItemCount?: number }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
+  const authModalOpen = useAuthStore((s) => s.authModalOpen);
+  const authModalInitialMode = useAuthStore((s) => s.authModalInitialMode);
+  const openAuthModal = useAuthStore((s) => s.openAuthModal);
+  const closeAuthModal = useAuthStore((s) => s.closeAuthModal);
   const { user, isAuthenticated, logout } = useAuthStore();
+  const onAuthModalOpenChange = (open: boolean) => {
+    if (!open) closeAuthModal();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-surface/70 glass">
@@ -96,7 +102,7 @@ export function Header({ cartItemCount = 0 }: { cartItemCount?: number }) {
             </DropdownMenu>
           ) : (
             <button 
-              onClick={() => setIsAuthModalOpen(true)}
+              onClick={() => openAuthModal("login")}
               className="p-2 transition-transform hover:scale-110"
             >
               <User className="size-6" strokeWidth={1.5} />
@@ -134,7 +140,7 @@ export function Header({ cartItemCount = 0 }: { cartItemCount?: number }) {
                 className="w-full mt-4"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  setIsAuthModalOpen(true);
+                  openAuthModal("login");
                 }}
               >
                 Entrar / Cadastrar
@@ -144,9 +150,10 @@ export function Header({ cartItemCount = 0 }: { cartItemCount?: number }) {
         </div>
       )}
 
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onOpenChange={setIsAuthModalOpen} 
+      <AuthModal
+        isOpen={authModalOpen}
+        onOpenChange={onAuthModalOpenChange}
+        initialMode={authModalInitialMode}
       />
     </header>
   );

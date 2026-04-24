@@ -5,6 +5,12 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { cookies } from "next/headers";
 import { encrypt } from "@/lib/auth";
+import {
+  checkRateLimit,
+  getClientIpFromAction,
+  rateAuthLogin,
+  rateAuthRegister,
+} from "@/lib/rate-limit";
 
 const RegisterSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -28,6 +34,14 @@ export async function registerUser(data: RegisterInput) {
     return { 
       error: issue.message, 
       field: issue.path[0] as string
+    };
+  }
+
+  const ip = await getClientIpFromAction();
+  const rl = checkRateLimit(`auth:register:${ip}`, rateAuthRegister.max, rateAuthRegister.windowMs);
+  if (!rl.ok) {
+    return {
+      error: `Muitas tentativas de cadastro. Aguarde aproximadamente ${rl.retryAfterSec} segundos.`,
     };
   }
 
@@ -77,6 +91,14 @@ export async function loginUser(data: LoginInput) {
   const validation = LoginSchema.safeParse(data);
   if (!validation.success) {
     return { error: validation.error.issues[0].message };
+  }
+
+  const ip = await getClientIpFromAction();
+  const rl = checkRateLimit(`auth:login:${ip}`, rateAuthLogin.max, rateAuthLogin.windowMs);
+  if (!rl.ok) {
+    return {
+      error: `Muitas tentativas de login. Aguarde aproximadamente ${rl.retryAfterSec} segundos.`,
+    };
   }
 
   const { identifier, password } = validation.data;
